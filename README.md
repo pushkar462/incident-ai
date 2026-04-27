@@ -4,6 +4,8 @@ A production-quality, multi-agent pipeline that ingests server logs, performs ro
 
 ---
 
+Summary Doc link - https://drive.google.com/file/d/1uc7bSHZWqOdPz4f5HII6N5PO72E1Nt_u/view?usp=sharing
+
 ## Architecture
 
 ```
@@ -12,11 +14,13 @@ Logs → Agent 1 (Log Analysis) → Agent 2 (Solution Research) → Agent 3 (Pla
 ```
 
 ### Agent 1 — Log Analysis Agent (`agents/log_agent.py`)
+
 - Ingests all 3 log files (nginx-access, nginx-error, app-error)
 - Uses Gemini to detect anomalies, correlate events, identify root cause
 - Outputs: root cause, evidence snippets, confidence score, affected endpoints
 
 ### Agent 2 — Solution Research Agent (`agents/research_agent.py`)
+
 - **Primary source: real web scraping** (DuckDuckGo + BeautifulSoup)
 - Generates targeted queries from Agent 1 output
 - Scrapes trusted technical docs (SQLAlchemy, PostgreSQL, Gunicorn, Nginx)
@@ -24,6 +28,7 @@ Logs → Agent 1 (Log Analysis) → Agent 2 (Solution Research) → Agent 3 (Pla
 - Fallback: pre-defined solutions when web is unreachable
 
 ### Agent 3 — Resolution Planner Agent (`agents/planner_agent.py`)
+
 - Takes Agent 1 + Agent 2 outputs as input
 - Uses Gemini to produce a safe, production-ready remediation plan
 - Outputs: pre-checks, numbered steps with commands, post-checks, rollback plan
@@ -33,22 +38,26 @@ Logs → Agent 1 (Log Analysis) → Agent 2 (Solution Research) → Agent 3 (Pla
 ## Setup
 
 ### 1. Clone / extract the project
+
 ```bash
 cd incident-ai
 ```
 
 ### 2. Create a virtual environment
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 ```
 
 ### 3. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 4. Configure API key
+
 ```bash
 cp .env.example .env
 # Edit .env and add your Gemini API key
@@ -60,22 +69,29 @@ cp .env.example .env
 ## Running
 
 ### CLI (backend only)
+
 ```bash
 python main.py
 ```
+
 Optionally save the JSON report:
+
 ```bash
 python main.py --output report.json
 ```
+
 Use a custom log directory:
+
 ```bash
 python main.py --logs-dir /path/to/logs
 ```
 
 ### Streamlit Dashboard
+
 ```bash
 streamlit run streamlit_app.py
 ```
+
 Then open http://localhost:8501 in your browser.
 
 ---
@@ -165,6 +181,6 @@ incident-ai/
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|---|---|---|
-| `GEMINI_API_KEY` | ✅ Yes | Google Gemini API key |
+| Variable         | Required | Description           |
+| ---------------- | -------- | --------------------- |
+| `GEMINI_API_KEY` | ✅ Yes   | Google Gemini API key |
